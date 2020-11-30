@@ -1,0 +1,409 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="height:100%;width:100%">
+<head>
+    <meta charset="utf-8">
+    <title>TidalRoad</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'china.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/ecStat.js' %}"></script>
+    <script src="http://api.map.baidu.com/getscript?v=2.0&ak=ijZOCDeMMeaDM7EClzihmXT4I9yjZsAN"></script>
+    <script src="http://static.popodv.com/dvlibs/echarts/bmap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css" media="all">
+    <!-- ECharts单文件引入 -->
+{#    <script type="text/javascript" src="{% static 'echarts.js' %}"></script>#}
+    <script src="{% static 'china.js' %}"></script>
+    <script src="{% static 'province/beijing.js' %}"></script>
+</head>
+
+<body style="height:100%;width:100%;margin:0;background-color: #f3f3f3">
+<div style="position:relative; height:100%; width: 100%; float: left;">
+    <div id="content" style="position: absolute;left:0;top:0; height:100%;width:100%;float:left">
+        <div id="map"></div>
+        <div id="line"></div>
+        <div id="grid"></div>
+    </div>
+    <div id="date_container" style="position: absolute;right:100px;top:170px; width:20%;height:20%;">
+        <input id="date" type = date>
+        <button id="search">确定</button>
+    </div>
+</div>
+
+{#<script type="text/javascript" src="{%static 'js/road.map.js' %}"></script>#}
+{#<script type="text/javascript" src="{%static 'js/road.grid.js' %}"></script>#}
+{#<script type="text/javascript" src="{%static 'js/road.line.js' %}"></script>#}
+<script>
+    $('#date').val('2019-06-14');
+    $("#search").click(
+        function () {
+            var date = $("#date").val();
+            location.href = "../../../../tidalRoad/" + date;
+        }
+    );
+</script>
+
+<script>
+    var data = {{ data|safe }};
+    console.log(data);
+    option = {
+        tooltip: {
+            axisPointer: {
+                type: 'cross'
+            },
+            padding: 10,
+            backgroundColor: '#222',
+            borderColor: '#777',
+            borderWidth: 1,
+            formatter: function (obj) {
+                var value = obj.value;
+                return "<div style='border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px'>"
+                    + '道路名称：' + value[2]
+                    + '</div>'
+                    + '横坐标：' + value[0] + '<br>'
+
+                    + '纵坐标：' + value[1] + '<br>';
+            }
+        },
+        title: {
+            text: '北京市潮汐性拥堵道路标注图',
+            subtext: '待定',
+            sublink: '',
+            left: 'center',
+            top: 16
+        },
+        xAxis: {
+            type: 'value',
+            min: 1,
+            max: 1783,
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            },
+            splitNumber: 25
+        },
+        yAxis: {
+            type: 'value',
+            min: 1,
+            max: 1856,
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            },
+            splitNumber: 25
+        },
+        grid: {
+            top: 90
+        },
+        series: {
+            name: '路链',
+            type: 'scatter',
+            emphasis: {
+                label: {
+                    show: true,
+                    position: 'right',
+                    color: '#111',
+                    fontSize: 16,
+                }
+            },
+            symbolSize: 3,
+            data: data
+        }
+    };
+
+    myChart = echarts.init(document.getElementById('grid'));
+    myChart.setOption(option);
+</script>
+
+<script>
+    var myChart = echarts.init(document.getElementById('line'));
+    $.get('http://static.popodv.com/data/geo/lines-bus.json', function (data) {
+        var busLines = [].concat.apply([], data.map(function (busLine, idx) {
+            var prevPt;
+            var points = [];
+            for (var i = 0; i < busLine.length; i += 2) {
+                var pt = [busLine[i], busLine[i + 1]];
+                if (i > 0) {
+                    pt = [
+                        prevPt[0] + pt[0],
+                        prevPt[1] + pt[1]
+                    ];
+                }
+                prevPt = pt;
+
+                points.push([pt[0] / 1e4, pt[1] / 1e4]);
+            }
+            return {
+                coords: points,
+                lineStyle: {
+                    normal: {
+                        color: '#66de3a'
+                    }
+                }
+            };
+        }));
+        myChart.setOption(option = {
+            bmap: {
+                center: [116.46, 39.92],
+                zoom: 10,
+                // roam: true,
+                mapStyle: {
+                    styleJson: [{
+                        'featureType': 'water',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'land',
+                        'elementType': 'all',
+                        'stylers': {
+                            'color': '#f3f3f3'
+                        }
+                    }, {
+                        'featureType': 'railway',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'highway',
+                        'elementType': 'all',
+                        'stylers': {
+                            //'color': '#f3f3f3' //本色
+                            'color': '#66de3a'
+                        }
+                    }, {
+                        'featureType': 'highway',
+                        'elementType': 'labels',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'arterial',
+                        'elementType': 'geometry',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'arterial',
+                        'elementType': 'geometry.fill',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'poi',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'green',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'subway',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'manmade',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'local',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'arterial',
+                        'elementType': 'labels',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'boundary',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'building',
+                        'elementType': 'all',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }, {
+                        'featureType': 'label',
+                        'elementType': 'labels.text.fill',
+                        'stylers': {
+                            'visibility': 'off'
+                        }
+                    }]
+                }
+            },
+            series: [{
+                type: 'lines',
+                coordinateSystem: 'bmap',
+                polyline: true,
+                data: busLines,
+                silent: true,
+                lineStyle: {
+                    normal: {
+                        color: 'green',
+                        //color: 'rgb(200, 35, 45)',
+                        opacity: 0.2,
+                        width: 1
+                    }
+                },
+                progressiveThreshold: 500,
+                progressive: 200
+            }]
+        });
+    });
+
+// 刷新调整
+window.onresize = function () {
+    myChart.resize();
+};
+</script>
+
+<script>
+    var uploadedDataURL = "{% static 'map-beijing.json' %}";
+
+function randomData() {
+    return Math.round(Math.random() * 45000);
+}
+
+function showProvince() {
+    var name = 'bj';
+    var myChart = echarts.init(document.getElementById('map'));
+
+    myChart.showLoading();
+
+    $.get('{%static 'map-beijing.json' %}', function (geoJson) {
+
+        // myChart.hideLoading();
+
+        echarts.registerMap(name, geoJson);
+
+        myChart.setOption(option = {
+            //backgroundColor: '#044060',
+            visualMap: {
+                min: 0,
+                max: 45000,
+                left: 'left',
+                top: 'bottom',
+                show: false,
+                text: ['高', '低'], // 文本，默认为数值文本
+                // calculable: true,
+                inRange: {
+                    color: ['yellow', 'lightskyblue', 'orangered']
+                },
+                textStyle: {
+                    color: '#101010'
+                }
+            },
+            series: [{
+                type: 'map',
+                mapType: name,
+                label: {
+                    normal: {
+                        show: true
+                    },
+                    emphasis: {
+                        textStyle: {
+                            color: '#202020'
+                        }
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        borderColor: '#389BB7',
+                        areaColor: '#202020',
+                    },
+                    emphasis: {
+                        areaColor: '#389BB7',
+                        borderWidth: 0
+                    }
+                },
+                animation: false,
+                data: [{
+                    name: '东城区',
+                    value: randomData(),
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    }
+                }, {
+                    name: '西城区',
+                    value: randomData(),
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    }
+                }, {
+                    name: '海淀区',
+                    value: randomData()
+                }, {
+                    name: '朝阳区',
+                    value: randomData()
+                }, {
+                    name: '石景山区',
+                    value: randomData(),
+                }, {
+                    name: '大兴区',
+                    value: randomData()
+                }, {
+                    name: '门头沟区',
+                    value: randomData(),
+                }, {
+                    name: '昌平区',
+                    value: randomData()
+                }, {
+                    name: '通州区',
+                    value: randomData(),
+                }, {
+                    name: '房山区',
+                    value: randomData()
+                }, {
+                    name: '丰台区',
+                    value: randomData()
+                }, {
+                    name: '顺义区',
+                    value: randomData()
+                }, {
+                    name: '怀柔区',
+                    value: randomData()
+                }, {
+                    name: '密云区',
+                    value: randomData()
+                }, {
+                    name: '延庆区',
+                    value: randomData()
+                }, {
+                    name: '平谷区',
+                    value: randomData()
+                }]
+                // animationDurationUpdate: 1000,
+                // animationEasingUpdate: 'quinticInOut'
+            }]
+        });
+    });
+}
+showProvince();
+</script>
+
+</body>
+</html>

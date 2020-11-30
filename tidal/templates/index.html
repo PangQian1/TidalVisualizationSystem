@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/jquery.fullPage.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+<body>
+joejojg
+<a href="ceshi" target="iframe_content">故障路段影响范围分析</a>
+<p id="t">
+</p>
+
+</body>
+
+<script>
+    $("#b").click(
+        function getAjax() {
+               $.ajax({
+                    type: "get",
+                    url: "../../../../test/" + "/ajax",
+                    data: {},
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+        }
+    );
+
+</script>
+</html>
