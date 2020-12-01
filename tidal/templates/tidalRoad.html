@@ -25,99 +25,124 @@
         <div id="line"></div>
         <div id="grid"></div>
     </div>
-    <div id="date_container" style="position: absolute;right:100px;top:170px; width:20%;height:20%;">
+    <div id="date_container" style="position: absolute;right:100px;top:170px; width:20%;height:20%;z-index: 999;">
         <input id="date" type = date>
         <button id="search">确定</button>
     </div>
 </div>
 
-{#<script type="text/javascript" src="{%static 'js/road.map.js' %}"></script>#}
-{#<script type="text/javascript" src="{%static 'js/road.grid.js' %}"></script>#}
-{#<script type="text/javascript" src="{%static 'js/road.line.js' %}"></script>#}
 <script>
-    var dt = {{ date|safe }}
+    var dt = {{ date|safe }};
     $('#date').val(dt);
-    console.log(dt);
     $("#search").click(
         function () {
             var date = $("#date").val();
-            location.href = "../../../../tidalRoad/" + date;
+            $.ajax({
+                type: "get",
+                url:  "../../../../tidalRoad/" + date + "/ajax",
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if(data.data.length != 0){
+                       showGrid(data['data'], data['date']);
+                    }else{
+                        alert("该日期数据暂时缺失！");
+                        showGrid(data['data'], data['date']);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
         }
     );
-</script>
 
-<script>
     var data = {{ data|safe }};
     console.log(data);
-    option = {
-        tooltip: {
-            axisPointer: {
-                type: 'cross'
-            },
-            padding: 10,
-            backgroundColor: '#222',
-            borderColor: '#777',
-            borderWidth: 1,
-            formatter: function (obj) {
-                var value = obj.value;
-                return "<div style='border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px'>"
-                    + '道路名称：' + value[2]
-                    + '</div>'
-                    + '横坐标：' + value[0] + '<br>'
+    function showGrid(data, date){
+        date = date.replaceAll('"', '');
+        option = {
+            tooltip: {
+                axisPointer: {
+                    type: 'cross'
+                },
+                padding: 10,
+                backgroundColor: '#222',
+                borderColor: '#777',
+                borderWidth: 1,
+                formatter: function (obj) {
+                    var value = obj.value;
+                    return "<div style='border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px'>"
+                        + '道路名称：' + value[4]
+                        + '</div>'
+                        + '经度：' + value[2] + '<br>'
 
-                    + '纵坐标：' + value[1] + '<br>';
+                        + '纬度：' + value[3] + '<br>';
+                }
+            },
+            title: {
+                text: '北京市潮汐性拥堵道路标注图',
+                subtext: date,
+                sublink: '',
+                left: 'center',
+                top: 16
+            },
+            xAxis: {
+                type: 'value',
+                min: 1,
+                max: 1783,
+                splitLine: {
+                    lineStyle: {
+                        type: 'dashed',
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        width:'0'//坐标线的宽度
+                    }
+                },
+                splitNumber: 25
+            },
+            yAxis: {
+                type: 'value',
+                min: 1,
+                max: 1856,
+                splitLine: {
+                    lineStyle: {
+                        type: 'dashed'
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        width:'0'//坐标线的宽度
+                    }
+                },
+                splitNumber: 25
+            },
+            grid: {
+                top: 90
+            },
+            series: {
+                name: '路链',
+                type: 'scatter',
+                emphasis: {
+                    label: {
+                        show: true,
+                        position: 'right',
+                        color: '#111',
+                        fontSize: 16,
+                    }
+                },
+                symbolSize: 3,
+                data: data
             }
-        },
-        title: {
-            text: '北京市潮汐性拥堵道路标注图',
-            subtext: '待定',
-            sublink: '',
-            left: 'center',
-            top: 16
-        },
-        xAxis: {
-            type: 'value',
-            min: 1,
-            max: 1783,
-            splitLine: {
-                lineStyle: {
-                    type: 'dashed'
-                }
-            },
-            splitNumber: 25
-        },
-        yAxis: {
-            type: 'value',
-            min: 1,
-            max: 1856,
-            splitLine: {
-                lineStyle: {
-                    type: 'dashed'
-                }
-            },
-            splitNumber: 25
-        },
-        grid: {
-            top: 90
-        },
-        series: {
-            name: '路链',
-            type: 'scatter',
-            emphasis: {
-                label: {
-                    show: true,
-                    position: 'right',
-                    color: '#111',
-                    fontSize: 16,
-                }
-            },
-            symbolSize: 3,
-            data: data
-        }
-    };
+        };
 
-    myChart = echarts.init(document.getElementById('grid'));
-    myChart.setOption(option);
+        myChart = echarts.init(document.getElementById('grid'));
+        myChart.setOption(option);
+    }
+    showGrid(data, dt);
 </script>
 
 <script>
