@@ -16,8 +16,8 @@
 <div style="width: 80%;white-space:nowrap;margin: 0 auto">
     <div class="input-group" style="margin: 0 auto">
         <input type="date" id="date" class="form-control" aria-describedby="basic-addon2">
-        <button type="button" class="btn btn-default" style="white-space:nowrap" id="search">Search</button>
-        <button type="button" class="btn btn-default" style="white-space:nowrap" id="map">Map</button>
+        <button type="button" class="btn btn-default" style="white-space:nowrap" id="search">确定</button>
+        <button type="button" class="btn btn-default" style="white-space:nowrap" id="map">地图</button>
     </div>
 </div>
 
@@ -48,6 +48,17 @@
         $("#myBody").empty();
         result = '';
         content = data;
+
+        for (var i = 0; i < content.length; i++) {
+            for (var j = 0; j < content.length - i - 1; j++) {
+                if (content[j]['length'] < content[j + 1]['length']) {
+                    var tmp = content[j];
+                    content[j] = content[j + 1];
+                    content[j + 1] = tmp;
+                }
+            }
+        }
+
         for (var i in content) {
             row = content[i];
             result += "<tr><td>" + row['name'] + "</td><td>" + row['length'] + '  ' + "</td><td>" + row['startCoor'] + "</td><td>" + row['endCoor'] +"</td></tr>";
@@ -56,16 +67,6 @@
     }
     showTable(tableData)
 
-    function showTableAjax(data) {
-        $("#myBody").empty();
-        result = '';
-        content = data;
-        for (var i in content) {
-            row = content[i];
-            result += "<tr><td>" + row['name'] + "</td><td>" + row['length'] + '  ' + "</td><td>" + row['startCoor'] + "</td><td>" + row['endCoor'] +"</td></tr>";
-        }
-        $("#myBody").html(result);
-    }
     $("#search").click(
         function () {
             var date = $("#date").val();
@@ -77,10 +78,10 @@
                 success: function (data) {
                     console.log(data);
                     if(data.tableData.length != 0){
-                       showTableAjax(data['tableData']);
+                       showTable(data['tableData']);
                     }else{
                         alert("该日期数据暂时缺失！");
-                        showTableAjax(data['tableData']);
+                        showTable(data['tableData']);
                     }
                 },
                 error: function (data) {
