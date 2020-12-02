@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="height:100%;width:100%">
+<head>
+    <meta charset="utf-8">
+    <title>TidalRoad</title>
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'echarts.min.js' %}"></script>
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body style="background-color: #f3f3f3">
+<div style="width: 80%;white-space:nowrap;margin: 0 auto">
+    <div class="input-group" style="margin: 0 auto">
+        <input type="date" id="date" class="form-control" aria-describedby="basic-addon2">
+        <button type="button" class="btn btn-default" style="white-space:nowrap" id="search">Search</button>
+        <button type="button" class="btn btn-default" style="white-space:nowrap" id="map">Map</button>
+    </div>
+</div>
+
+<div class="panel panel-default" style="width: 50%;margin: 0 auto">
+    <div class="panel-heading">
+        <h2 class="panel-title" style="text-align: center; font-size: 18px;">潮汐性拥堵连通路段（超过500m）统计表</h2>
+    </div>
+    <table class="table" style="background-color: #f3f3f3">
+        <thead>
+            <tr>
+                <th>道路名称</th>
+                <th>长度/m</th>
+                <th>起始坐标</th>
+                <th>终点坐标</th>
+            </tr>
+        </thead>
+        <tbody id="myBody">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var date = {{ date|safe }};
+    $('#date').val(date);
+    var tableData = {{ tableData|safe }};
+    console.log(tableData);
+    function showTable(data) {
+        $("#myBody").empty();
+        result = '';
+        content = data;
+        for (var i in content) {
+            row = content[i];
+            result += "<tr><td>" + row['name'] + "</td><td>" + row['length'] + '  ' + "</td><td>" + row['startCoor'] + "</td><td>" + row['endCoor'] +"</td></tr>";
+        }
+        $("#myBody").html(result);
+    }
+    showTable(tableData)
+
+    function showTableAjax(data) {
+        $("#myBody").empty();
+        result = '';
+        content = data;
+        for (var i in content) {
+            row = content[i];
+            result += "<tr><td>" + row['name'] + "</td><td>" + row['length'] + '  ' + "</td><td>" + row['startCoor'] + "</td><td>" + row['endCoor'] +"</td></tr>";
+        }
+        $("#myBody").html(result);
+    }
+    $("#search").click(
+        function () {
+            var date = $("#date").val();
+            $.ajax({
+                type: "get",
+                url:  "../../../../table/" + date + "/ajax",
+                data: {},
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if(data.tableData.length != 0){
+                       showTableAjax(data['tableData']);
+                    }else{
+                        alert("该日期数据暂时缺失！");
+                        showTableAjax(data['tableData']);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    );
+
+    {#切换到地图视图#}
+    $("#map").click(
+        function () {
+            var date = $("#date").val();
+            location.href = "../../../../tidalRoad/" + date + "/button";
+        }
+    );
+</script>
+
+</body>
+</html>

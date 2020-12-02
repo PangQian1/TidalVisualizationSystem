@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^$', views.home, name="home"),
     url(r'^admin/', admin.site.urls),
     url(r'^tidalRoad/(.*)/(.*)/$', views.tidalRoad),
+    url(r'^table/(.*)/(.*)/$', views.table),
 ]

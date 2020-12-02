@@ -1,36 +1,37 @@
 {% load static %}
 <!DOCTYPE html>
-<html style="height:100%;width:100%">
+<html>
 <head>
     <meta charset="utf-8">
     <title>TidalRoad</title>
-    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'echarts.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'china.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/china.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/ecStat.js' %}"></script>
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="http://api.map.baidu.com/getscript?v=2.0&ak=ijZOCDeMMeaDM7EClzihmXT4I9yjZsAN"></script>
     <script src="http://static.popodv.com/dvlibs/echarts/bmap.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css" media="all">
-    <!-- ECharts单文件引入 -->
-{#    <script type="text/javascript" src="{% static 'echarts.js' %}"></script>#}
-    <script src="{% static 'china.js' %}"></script>
-    <script src="{% static 'province/beijing.js' %}"></script>
 </head>
 
-<body style="height:100%;width:100%;margin:0;background-color: #f3f3f3">
-<div style="position:relative; height:100%; width: 100%; float: left;">
-    <div id="content" style="position: absolute;left:0;top:0; height:100%;width:100%;float:left">
-        <div id="map"></div>
-        <div id="line"></div>
-        <div id="grid"></div>
-    </div>
-    <div id="date_container" style="position: absolute;right:100px;top:170px; width:20%;height:20%;z-index: 999;">
-        <input id="date" type = date>
-        <button id="search">确定</button>
-    </div>
+<body style="text-align: center;background-color: #f3f3f3">
+<div style="width: 10%;height:100%;left: 0px;"></div>
+<div id="content" style="top:0px; height:80%;width:80%;float: right;">
+    <div id="map"></div>
+    <div id="line"></div>
+    <div id="grid"></div>
 </div>
+<div id="date_container" style="position:absolute;right:10%;top:50px; width:30%;height:50%;z-index: 999;">
+    <input id="date" type = "date" style="width: 200px">
+    <button id="search" type="button" class="btn btn-default">确定</button>
+    <button id="table" type="button" class="btn btn-default">道路信息</button>
+</div>
+<div id="white"></div>
 
+{#网格#}
 <script>
     var dt = {{ date|safe }};
     $('#date').val(dt);
@@ -86,7 +87,9 @@
                 subtext: date,
                 sublink: '',
                 left: 'center',
-                top: 16
+                top: 16,
+                textStyle:{fontSize: 20},
+                subtextStyle:{fontSize: 18},
             },
             xAxis: {
                 type: 'value',
@@ -143,6 +146,16 @@
         myChart.setOption(option);
     }
     showGrid(data, dt);
+</script>
+
+{#切换到table视图#}
+<script>
+    $("#table").click(
+        function () {
+            var date = $("#date").val();
+            location.href = "../../../../table/" + date + "/button";
+        }
+    );
 </script>
 
 <script>

@@ -12,3 +12,10 @@ class GridAttr(models.Model):
 class DateGrid(models.Model):
     gridNum = models.BigIntegerField(default=0)
     date = models.DateField()
+
+class GirdSplice(models.Model):
+    startCoor = models.CharField(max_length=100)
+    endCoor = models.CharField(max_length=100)
+    length = models.BigIntegerField(default=0)
+    name = models.CharField(max_length=500)
+    date = models.DateField()
