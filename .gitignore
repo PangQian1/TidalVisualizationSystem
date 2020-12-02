@@ -1,0 +1,3 @@
+.idea/*
+tidal/__pycache__/*
+tidal/migrations/__pycache__/*

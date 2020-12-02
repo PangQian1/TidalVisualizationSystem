@@ -18,14 +18,13 @@
 </head>
 
 <body style="text-align: center;background-color: #f3f3f3">
-<div style="width: 10%;height:100%;left: 0px;"></div>
-<div id="content" style="top:0px; height:80%;width:80%;float: right;">
+<div id="content" style="top:0px; height:80%;width:80%;">
     <div id="map"></div>
     <div id="line"></div>
     <div id="grid"></div>
 </div>
-<div id="date_container" style="position:absolute;right:10%;top:50px; width:30%;height:50%;z-index: 999;">
-    <input id="date" type = "date" style="width: 200px">
+<div id="date_container" style="position:absolute;right:10%;top:50px; width:30%;height:34px;z-index: 999;">
+    <input id="date" type="date" style="width: 150px;height: 34px;line-height: 100%">
     <button id="search" type="button" class="btn btn-default">确定</button>
     <button id="table" type="button" class="btn btn-default">道路信息</button>
 </div>
@@ -40,14 +39,14 @@
             var date = $("#date").val();
             $.ajax({
                 type: "get",
-                url:  "../../../../tidalRoad/" + date + "/ajax",
+                url: "../../../../tidalRoad/" + date + "/ajax",
                 data: {},
                 dataType: "json",
                 success: function (data) {
                     console.log(data);
-                    if(data.data.length != 0){
-                       showGrid(data['data'], data['date']);
-                    }else{
+                    if (data.data.length != 0) {
+                        showGrid(data['data'], data['date']);
+                    } else {
                         alert("该日期数据暂时缺失！");
                         showGrid(data['data'], data['date']);
                     }
@@ -61,7 +60,8 @@
 
     var data = {{ data|safe }};
     console.log(data);
-    function showGrid(data, date){
+
+    function showGrid(data, date) {
         date = date.replaceAll('"', '');
         option = {
             tooltip: {
@@ -88,8 +88,8 @@
                 sublink: '',
                 left: 'center',
                 top: 16,
-                textStyle:{fontSize: 20},
-                subtextStyle:{fontSize: 18},
+                textStyle: {fontSize: 20},
+                subtextStyle: {fontSize: 18},
             },
             xAxis: {
                 type: 'value',
@@ -102,7 +102,7 @@
                 },
                 axisLine: {
                     lineStyle: {
-                        width:'0'//坐标线的宽度
+                        width: '0'//坐标线的宽度
                     }
                 },
                 splitNumber: 25
@@ -118,7 +118,7 @@
                 },
                 axisLine: {
                     lineStyle: {
-                        width:'0'//坐标线的宽度
+                        width: '0'//坐标线的宽度
                     }
                 },
                 splitNumber: 25
@@ -145,6 +145,7 @@
         myChart = echarts.init(document.getElementById('grid'));
         myChart.setOption(option);
     }
+
     showGrid(data, dt);
 </script>
 
@@ -311,138 +312,139 @@
         });
     });
 
-// 刷新调整
-window.onresize = function () {
-    myChart.resize();
-};
+    // 刷新调整
+    window.onresize = function () {
+        myChart.resize();
+    };
 </script>
 
 <script>
     var uploadedDataURL = "{% static 'map-beijing.json' %}";
 
-function randomData() {
-    return Math.round(Math.random() * 45000);
-}
+    function randomData() {
+        return Math.round(Math.random() * 45000);
+    }
 
-function showProvince() {
-    var name = 'bj';
-    var myChart = echarts.init(document.getElementById('map'));
+    function showProvince() {
+        var name = 'bj';
+        var myChart = echarts.init(document.getElementById('map'));
 
-    myChart.showLoading();
+        myChart.showLoading();
 
-    $.get('{%static 'map-beijing.json' %}', function (geoJson) {
+        $.get('{%static 'map-beijing.json' %}', function (geoJson) {
 
-        // myChart.hideLoading();
+            // myChart.hideLoading();
 
-        echarts.registerMap(name, geoJson);
+            echarts.registerMap(name, geoJson);
 
-        myChart.setOption(option = {
-            //backgroundColor: '#044060',
-            visualMap: {
-                min: 0,
-                max: 45000,
-                left: 'left',
-                top: 'bottom',
-                show: false,
-                text: ['高', '低'], // 文本，默认为数值文本
-                // calculable: true,
-                inRange: {
-                    color: ['yellow', 'lightskyblue', 'orangered']
-                },
-                textStyle: {
-                    color: '#101010'
-                }
-            },
-            series: [{
-                type: 'map',
-                mapType: name,
-                label: {
-                    normal: {
-                        show: true
+            myChart.setOption(option = {
+                //backgroundColor: '#044060',
+                visualMap: {
+                    min: 0,
+                    max: 45000,
+                    left: 'left',
+                    top: 'bottom',
+                    show: false,
+                    text: ['高', '低'], // 文本，默认为数值文本
+                    // calculable: true,
+                    inRange: {
+                        color: ['yellow', 'lightskyblue', 'orangered']
                     },
-                    emphasis: {
-                        textStyle: {
-                            color: '#202020'
-                        }
+                    textStyle: {
+                        color: '#101010'
                     }
                 },
-                itemStyle: {
-                    normal: {
-                        borderColor: '#389BB7',
-                        areaColor: '#202020',
-                    },
-                    emphasis: {
-                        areaColor: '#389BB7',
-                        borderWidth: 0
-                    }
-                },
-                animation: false,
-                data: [{
-                    name: '东城区',
-                    value: randomData(),
+                series: [{
+                    type: 'map',
+                    mapType: name,
                     label: {
                         normal: {
-                            show: false
+                            show: true
+                        },
+                        emphasis: {
+                            textStyle: {
+                                color: '#202020'
+                            }
                         }
-                    }
-                }, {
-                    name: '西城区',
-                    value: randomData(),
-                    label: {
+                    },
+                    itemStyle: {
                         normal: {
-                            show: false
+                            borderColor: '#389BB7',
+                            areaColor: '#202020',
+                        },
+                        emphasis: {
+                            areaColor: '#389BB7',
+                            borderWidth: 0
                         }
-                    }
-                }, {
-                    name: '海淀区',
-                    value: randomData()
-                }, {
-                    name: '朝阳区',
-                    value: randomData()
-                }, {
-                    name: '石景山区',
-                    value: randomData(),
-                }, {
-                    name: '大兴区',
-                    value: randomData()
-                }, {
-                    name: '门头沟区',
-                    value: randomData(),
-                }, {
-                    name: '昌平区',
-                    value: randomData()
-                }, {
-                    name: '通州区',
-                    value: randomData(),
-                }, {
-                    name: '房山区',
-                    value: randomData()
-                }, {
-                    name: '丰台区',
-                    value: randomData()
-                }, {
-                    name: '顺义区',
-                    value: randomData()
-                }, {
-                    name: '怀柔区',
-                    value: randomData()
-                }, {
-                    name: '密云区',
-                    value: randomData()
-                }, {
-                    name: '延庆区',
-                    value: randomData()
-                }, {
-                    name: '平谷区',
-                    value: randomData()
+                    },
+                    animation: false,
+                    data: [{
+                        name: '东城区',
+                        value: randomData(),
+                        label: {
+                            normal: {
+                                show: false
+                            }
+                        }
+                    }, {
+                        name: '西城区',
+                        value: randomData(),
+                        label: {
+                            normal: {
+                                show: false
+                            }
+                        }
+                    }, {
+                        name: '海淀区',
+                        value: randomData()
+                    }, {
+                        name: '朝阳区',
+                        value: randomData()
+                    }, {
+                        name: '石景山区',
+                        value: randomData(),
+                    }, {
+                        name: '大兴区',
+                        value: randomData()
+                    }, {
+                        name: '门头沟区',
+                        value: randomData(),
+                    }, {
+                        name: '昌平区',
+                        value: randomData()
+                    }, {
+                        name: '通州区',
+                        value: randomData(),
+                    }, {
+                        name: '房山区',
+                        value: randomData()
+                    }, {
+                        name: '丰台区',
+                        value: randomData()
+                    }, {
+                        name: '顺义区',
+                        value: randomData()
+                    }, {
+                        name: '怀柔区',
+                        value: randomData()
+                    }, {
+                        name: '密云区',
+                        value: randomData()
+                    }, {
+                        name: '延庆区',
+                        value: randomData()
+                    }, {
+                        name: '平谷区',
+                        value: randomData()
+                    }]
+                    // animationDurationUpdate: 1000,
+                    // animationEasingUpdate: 'quinticInOut'
                 }]
-                // animationDurationUpdate: 1000,
-                // animationEasingUpdate: 'quinticInOut'
-            }]
+            });
         });
-    });
-}
-showProvince();
+    }
+
+    showProvince();
 </script>
 
 </body>
