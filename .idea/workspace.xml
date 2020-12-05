@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="aab1e69f-113c-43f4-a194-a1382f94679a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tidal/templates/table.html" beforeDir="false" afterPath="$PROJECT_DIR$/tidal/templates/table.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tidalIdentify/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/tidalIdentify/settings.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,6 +40,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -52,7 +53,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../html_highway" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -124,7 +125,12 @@
       <option name="presentableId" value="Default" />
       <updated>1606659423600</updated>
       <workItem from="1606659428041" duration="40599000" />
-      <workItem from="1606788472423" duration="38673000" />
+      <workItem from="1606788472423" duration="41678000" />
+      <workItem from="1606978477101" duration="452000" />
+      <workItem from="1606979020615" duration="713000" />
+      <workItem from="1606980112819" duration="2555000" />
+      <workItem from="1606984722134" duration="3187000" />
+      <workItem from="1607133644709" duration="1288000" />
     </task>
     <servers />
   </component>
