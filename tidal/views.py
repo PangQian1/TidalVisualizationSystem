@@ -36,8 +36,8 @@ def tidalRoad(request, date, type):
             tmp = []
             tmp.append(v['x_coor'])
             tmp.append(v['y_coor'])
-            tmp.append(v['longi'])
-            tmp.append(v['lati'])
+            tmp.append(str(round(float(v['longi']), 4)))
+            tmp.append(str(round(float(v['lati']), 4)))
             tmp.append(v['road_name'])
             data.append(tmp)
     print(date)

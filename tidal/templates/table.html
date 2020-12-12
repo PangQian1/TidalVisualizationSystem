@@ -29,7 +29,7 @@
         <thead>
         <tr>
             <th>道路名称</th>
-            <th>长度/m</th>
+            <th>长度</th>
             <th>起始坐标</th>
             <th>终点坐标</th>
         </tr>
@@ -62,7 +62,7 @@
 
         for (var i in content) {
             row = content[i];
-            result += "<tr><td>" + row['name'] + "</td><td>" + row['length'] + '  ' + "</td><td>" + row['startCoor'] + "</td><td>" + row['endCoor'] + "</td></tr>";
+            result += "<tr><td>" + row['name'] + "</td><td>" + row['length'] + 'm' + "</td><td>" + row['startCoor'] + "</td><td>" + row['endCoor'] + "</td></tr>";
         }
         $("#myBody").html(result);
     }
